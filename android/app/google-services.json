@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "798438603522",
+    "project_id": "qwerty-c4865",
+    "storage_bucket": "qwerty-c4865.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798438603522:android:b66e242776d45a4fe1e01b",
+        "android_client_info": {
+          "package_name": "com.qwerty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798438603522-mj5q584bhsnfr9khjgkt56omajrljfll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7-3s5vqz50ecnAV1cMmS086Tq9nN1A_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798438603522-mj5q584bhsnfr9khjgkt56omajrljfll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
