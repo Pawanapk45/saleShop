@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignIn from "../../screens/Signin";
 import Login from "../../screens/login";
 import Otpscreen from "../../screens/otp";
+import ForgotPasswordScreen from "../../screens/ForgetPasswordScreen";
 
 const AuthNavigation = ()=> {
     const Stack = createNativeStackNavigator();
@@ -14,6 +15,7 @@ const AuthNavigation = ()=> {
                 <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />
                 <Stack.Screen name="SignIn" component={SignIn}  />
                 <Stack.Screen name="OTPScreen" component={Otpscreen}  />
+                <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} options={{headerShown: false}} />
             </Stack.Navigator>
         </NavigationContainer>
     )

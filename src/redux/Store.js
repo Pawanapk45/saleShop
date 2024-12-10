@@ -63,24 +63,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Correct
 import categoriesReducer from './featurs/categoriesSlice/CategoriesSlice';
 import slideShowReducer from './featurs/offerSlide/OfferSlics';
 import cartReducer from './featurs/cartSlice/CartSliceProduct';
-import userReducer from './featurs/userSlice/UserSlice';
+import authReducer from './featurs/authSlice/AuthSlice';
 
 // Persist Configuration
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage,  // Using AsyncStorage for React Native
-  whitelist: ['cart'],    // Only persist the 'cart' slice
+  storage: AsyncStorage, 
+  // whitelist: ['cart',],  
 };
 
-// Persisted Reducer for Cart
-const persistedCartReducer = persistReducer(persistConfig, cartReducer);
+
+const persistedCartReducer = persistReducer(persistConfig, cartReducer,);
+const persistedReducer = persistReducer(persistConfig, authReducer);
 
 const store = configureStore({
   reducer: {
     categories: categoriesReducer,
     slideShow: slideShowReducer,
-    cart: persistedCartReducer, // Cart slice with persistence
-    users: userReducer,
+    cart: persistedCartReducer, 
+    auth: persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -7,7 +7,7 @@
 // import AddProduct from "../../screens/AddProuct";
 // import CatScreen from "../../screens/CartScreen";
 // import ProductScreen from "../../screens/ProductScreen";
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import ProductDetails from "../../screens/ProductDetails";
 // import BuyItemScreen from "../../screens/BuyItemScreen";
 // import UserScreen from "../../screens/UserScreen";
@@ -18,7 +18,7 @@
 //     const Drawer = createDrawerNavigator();
 
 //     return(
-        
+
 //         <NavigationContainer>
 //             <Stack.Navigator initialRouteName="Home">
 //                 <Stack.Screen name="ShomeHomeScreen" component={ShomeHomeScreen} options={{  headerShown: false}} />
@@ -38,20 +38,20 @@
 
 //     //     <NavigationContainer>
 //     //     <BottomTab.Navigator initialRouteName="ShomeHomeScreen">
-//     //       <BottomTab.Screen 
-//     //         name="Home" 
-//     //         component={ShomeHomeScreen} 
-//     //         options={{ headerShown: false }} 
+//     //       <BottomTab.Screen
+//     //         name="Home"
+//     //         component={ShomeHomeScreen}
+//     //         options={{ headerShown: false }}
 //     //       />
-//     //       <BottomTab.Screen 
-            
-//     //         name="Categories" 
-//     //         component={CategoriesPart} 
+//     //       <BottomTab.Screen
+
+//     //         name="Categories"
+//     //         component={CategoriesPart}
 //     //       />
-          
-//     //       <BottomTab.Screen 
-//     //         name="Cart" 
-//     //         component={CatScreen} 
+
+//     //       <BottomTab.Screen
+//     //         name="Cart"
+//     //         component={CatScreen}
 //     //       />
 //     //     </BottomTab.Navigator>
 //     //   </NavigationContainer>
@@ -62,15 +62,15 @@
 
 // export default AppNavigation;
 
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
-  DrawerItem
+  DrawerItem,
 } from '@react-navigation/drawer';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import UserIcon from 'react-native-vector-icons/AntDesign';
 import SettingIcon from 'react-native-vector-icons/Feather';
@@ -78,22 +78,50 @@ import SignOutIcon from 'react-native-vector-icons/MaterialIcons';
 import StackNavigation from './StackNavgation';
 import CatScreen from '../../screens/CartScreen';
 import UserScreen from '../../screens/UserScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/featurs/authSlice/AuthSlice';
 
 const Drawer = createDrawerNavigator();
 
 // Custom Drawer Content
 function CustomDrawerContent(props) {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUserData = await AsyncStorage.getItem('userData');
+        if (storedUserData) {
+          setUserData(JSON.parse(storedUserData));
+        }
+      } catch (error) {
+        console.error('Failed to load user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+  const dispatch = useDispatch();
+  const logOut = async () => {
+    await AsyncStorage.removeItem('isLoggedIn');
+    dispatch(logout());
+  };
   return (
     <DrawerContentScrollView {...props}>
       {/* Drawer Header */}
       <View style={styles.drawerHeader}>
         <Image
-          source={{ uri: 'https://i.pinimg.com/736x/f8/95/68/f895680161de0db0a97b631b1f72cd95.jpg' }} // Placeholder Profile Image
+          source={{
+            uri: 'https://i.pinimg.com/736x/f8/95/68/f895680161de0db0a97b631b1f72cd95.jpg',
+          }} // Placeholder Profile Image
           style={styles.profileImage}
         />
         <View>
           <Text style={styles.userName}>John Doe</Text>
-          <Text style={styles.userEmail}>John@gmail.com</Text>
+          <Text style={styles.userEmail}>
+            {userData?.email || 'Not Available'}
+          </Text>
         </View>
       </View>
 
@@ -104,13 +132,17 @@ function CustomDrawerContent(props) {
       <View style={styles.bottomDrawerSection}>
         <DrawerItem
           label="Settings"
-          icon={({ color, size }) => <SettingIcon name="settings" size={size} color={color} />}
+          icon={({color, size}) => (
+            <SettingIcon name="settings" size={size} color={color} />
+          )}
           onPress={() => alert('Settings Screen')} // इसे Settings स्क्रीन पर नेविगेट करें
         />
         <DrawerItem
           label="Sign Out"
-          icon={({ color, size }) => <SignOutIcon name="logout" size={size} color={color} />}
-          onPress={() => alert('Signing Out...')} // Sign Out का लॉजिक यहां जोड़ें
+          icon={({color, size}) => (
+            <SignOutIcon name="logout" size={size} color={color} />
+          )}
+          onPress={logOut} // Sign Out का लॉजिक यहां जोड़ें
         />
       </View>
     </DrawerContentScrollView>
@@ -122,7 +154,7 @@ export default function AppNavigation() {
     <NavigationContainer>
       <Drawer.Navigator
         initialRouteName="Home"
-        drawerContent={(props) => <CustomDrawerContent {...props} />} // Custom Drawer Content
+        drawerContent={props => <CustomDrawerContent {...props} />} // Custom Drawer Content
         screenOptions={{
           headerShown: false,
           drawerStyle: styles.drawerStyle,
@@ -130,28 +162,33 @@ export default function AppNavigation() {
           drawerActiveTintColor: 'white',
           drawerInactiveTintColor: 'gray',
           drawerActiveBackgroundColor: 'lightpink',
-          height:'100%',
-        }}
-      >
+          height: '100%',
+        }}>
         <Drawer.Screen
           name="Home"
           component={StackNavigation}
           options={{
-            drawerIcon: ({ color, size }) => <Icon name="home-outline" size={size} color={color} />,
+            drawerIcon: ({color, size}) => (
+              <Icon name="home-outline" size={size} color={color} />
+            ),
           }}
         />
         <Drawer.Screen
           name="Cart"
           component={CatScreen}
           options={{
-            drawerIcon: ({ color, size }) => <Icon name="cart-outline" size={size} color={color} />,
+            drawerIcon: ({color, size}) => (
+              <Icon name="cart-outline" size={size} color={color} />
+            ),
           }}
         />
         <Drawer.Screen
           name="User"
           component={UserScreen}
           options={{
-            drawerIcon: ({ color, size }) => <UserIcon name="user" size={size} color={color} />,
+            drawerIcon: ({color, size}) => (
+              <UserIcon name="user" size={size} color={color} />
+            ),
           }}
         />
       </Drawer.Navigator>
@@ -204,6 +241,5 @@ const styles = {
     marginTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#ccc',
-    
   },
 };
